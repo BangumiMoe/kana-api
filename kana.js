@@ -31,7 +31,7 @@ server.post('/add', function(req, res) {
                 reloadTracker();
                 res.send(200, 'infoHash Updated');
             }
-        })
+        });
     } else {
         res.send(400, 'Bad Request');
     }
