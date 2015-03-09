@@ -9,12 +9,6 @@ module.exports = {
         ip_whitelist: ["127.0.0.1"],
         api_key: "yieV9ieltaeg1iShthaiWee8peiKi2mico9ohVee"
     },
-
-    // set ssl_{certificate, key} to a falsy value to disable.
-    ssl: {
-        certificate: "/path/to/ssl_crt.pem",
-        key: "/path/to/ssl_key.pem"
-    },
     
     tracker: {
         infohash_whitelist: "/path/to/whitelist"
