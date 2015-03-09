@@ -9,8 +9,6 @@ var exec = require('child_process').exec;
 var config = require('./config');
 
 var server = restify.createServer({
-    certificate: config['ssl'].certificate || undefined,
-    key: config['ssl'].key || undefined,
     name: 'Kana API'
 });
 server.listen(process.env.PORT || config['http'].port || 2333,
@@ -18,7 +16,36 @@ server.listen(process.env.PORT || config['http'].port || 2333,
         console.log('%s listening at %s', server.name, server.url);
 });
 
+server.use(restify.bodyParser());
 
+server.use(checkIdent);
+
+server.post('/add', function(req, res) {
+    var infoHash = req.params.infoHash + '';
+    var r = new RegExp(/([A-F\d]{40})/i);
+    if (r.test(infoHash)) {
+        addToWhitelist(infoHash, function(err) {
+            if (err) {
+                return res.send(500, 'Internal Server Error');
+            } else {
+                reloadTracker();
+                res.send(200, 'infoHash Updated');
+            }
+        })
+    } else {
+        res.send(400, 'Bad Request');
+    }
+})
+
+function checkIdent(req, res, next) {
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    var key = req.params.key + '';
+    if (config['security'].ip_whitelist.indexOf(ip) !== -1 && key === config['security'].api_key) {
+        next();
+    } else {
+        return next(new restify.ForbiddenError("You are not allowed to do so."));
+    }
+};
 
 function getTrackerPid(callback) {
     exec('pidof opentracker', function (err, stdout) {
@@ -30,7 +57,7 @@ function getTrackerPid(callback) {
             // FIXME what if there are more than one opentracker process?
             callback(null, validator.trim(stdout));
         }
-    }
+    });
 };
 
 function addToWhitelist(infoHash, callback) {
