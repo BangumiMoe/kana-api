@@ -35,7 +35,7 @@ server.post('/add', function(req, res) {
     } else {
         res.send(400, 'Bad Request');
     }
-})
+});
 
 function checkIdent(req, res, next) {
     var ip = req.headers['x-forwarded-for'].split(',')[0] || req.connection.remoteAddress;
