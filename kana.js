@@ -38,7 +38,7 @@ server.post('/add', function(req, res) {
 })
 
 function checkIdent(req, res, next) {
-    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    var ip = req.headers['x-forwarded-for'].split(',')[0] || req.connection.remoteAddress;
     var key = req.params.key + '';
     if (config['security'].ip_whitelist.indexOf(ip) !== -1 && key === config['security'].api_key) {
         next();
