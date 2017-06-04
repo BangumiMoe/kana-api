@@ -6,7 +6,7 @@
     "start": "node ./kana"
   },
   "dependencies": {
-    "restify": "2.8.5",
-    "validator": "3.33.0"
+    "restify": "^4.3.0",
+    "validator": "^7.0.0"
   }
 }
